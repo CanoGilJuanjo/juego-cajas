@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego de Cajas</title>
+    <link rel="shortcut icon" href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQcYVn65Ds84ji-7V55OTONIhG-hsMnEwgcHw&s" type="image/x-icon">
+    <style>
+        body {
+            display: flex;
+            flex-flow: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: rgba(0, 0, 0, 0.823);
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            display: flex;
+            gap: 30px;
+        }
+
+        .caja {
+            width: 200px;
+            height: 200px;
+            background-color: #ffd9a3;
+            border: 2px solid #ff9500;
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 32px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .caja:hover {
+            transform: scale(1.05);
+        }
+
+        .caja.oscuro {
+            background-color: #4a4a4a;
+            color: #4a4a4a;
+        }
+
+        .caja.seleccionado {
+            background-color: rgba(255, 217, 163, 0.2);
+            border-color: #ff9500;
+        }
+
+        .mensaje {
+            font-size: 28px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .victoria {
+            color: #4caf50;
+        }
+
+        .derrota {
+            color: #f44336;
+        }
+
+        .boton-reiniciar {
+            margin-top: 30px;
+            padding: 12px 30px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+        .boton-reiniciar:hover {
+            background-color: #45a049;
+        }
+
+        .mensaje-reinicio {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #4caf50;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            display: none;
+            animation: deslizar-entrada 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .mensaje-reinicio.mostrar {
+            display: block;
+        }
+
+        @keyframes deslizar-entrada {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+
+        .pantalla-carga {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.823);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .caja-giratoria {
+            width: 100px;
+            height: 100px;
+            background-color: #ffd9a3;
+            border: 3px solid #ff9500;
+            border-radius: 10px;
+            animation: girar-360 2s linear infinite;
+        }
+
+        @keyframes girar-360 {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="pantalla-carga" id="pantalla-carga">
+        <div class="caja-giratoria"></div>
+    </div>
+    <div class="mensaje-reinicio" id="mensaje-reinicio">Se ha reiniciado correctamente</div>
+    <div class="container">
+        <div class="caja" id="caja1" onclick="seleccionarCaja(1)"></div>
+        <div class="caja" id="caja2" onclick="seleccionarCaja(2)"></div>
+    </div>
+    <div >
+        <button class="boton-reiniciar" onclick="reiniciar()">Reiniciar</button>
+    </div>
+
+    <script>
+        let ganador = null;
+        let juegoTerminado = false;
+
+        let mensajeDerrota = '<span class="mensaje derrota">✗ Derrota</span>';
+        let mensajeVictoria = `<span class="mensaje victoria">✓ Victoria</span>`;
+        function inicializarJuego() {
+            ganador = Math.random() > 0.5 ? 1 : 2;
+            juegoTerminado = false;
+        }
+
+        function seleccionarCaja(numeroCaja) {
+            
+            const caja1 = document.getElementById('caja1');
+            const caja2 = document.getElementById('caja2');
+            
+            
+            // Aplicar estilos
+            if (numeroCaja === 1) {
+                if(caja1.classList.contains('seleccionado') || caja2.classList.contains('seleccionado')){
+                    caja1.classList.remove('seleccionado');
+                    caja2.classList.remove('oscuro');
+                    caja2.classList.remove('seleccionado');
+                    caja1.classList.remove('oscuro');
+                    caja1.innerHTML = '';
+                    caja2.innerHTML = '';
+                }else{
+                    caja1.classList.add('seleccionado');
+                    caja2.classList.add('oscuro');
+                    caja1.innerHTML =  numeroCaja === ganador ? '<span class="mensaje victoria">✓ Victoria</span>' : '<span class="mensaje derrota">✗ Derrota</span>';
+                    caja2.innerHTML = numeroCaja === ganador ? '<span class="mensaje derrota">✗ Derrota</span>' : '<span class="mensaje victoria">✓ Victoria</span>';
+                }
+            }else {
+                if(caja2.classList.contains('seleccionado') || caja1.classList.contains('seleccionado')){ 
+                    caja1.classList.remove('seleccionado');
+                    caja2.classList.remove('oscuro');
+                    caja2.classList.remove('seleccionado');
+                    caja1.classList.remove('oscuro');
+                    caja1.innerHTML = '';
+                    caja2.innerHTML = '';
+                }else{
+                    caja2.classList.add('seleccionado');
+                    caja1.classList.add('oscuro');
+                    caja2.innerHTML = numeroCaja === ganador ? '<span class="mensaje victoria">✓ Victoria</span>' : '<span class="mensaje derrota">✗ Derrota</span>';
+                    caja1.innerHTML = numeroCaja === ganador ? '<span class="mensaje derrota">✗ Derrota</span>' : '<span class="mensaje victoria">✓ Victoria</span>';
+                }
+            }
+        }
+
+        function reiniciar() {
+            const caja1 = document.getElementById('caja1');
+            const caja2 = document.getElementById('caja2');
+            const mensajeReinicio = document.getElementById('mensaje-reinicio');
+            
+            caja1.classList.remove('seleccionado', 'oscuro');
+            caja2.classList.remove('seleccionado', 'oscuro');
+            caja1.innerHTML = '';
+            caja2.innerHTML = '';
+            
+            inicializarJuego();
+            
+            // Mostrar mensaje de reinicio
+            mensajeReinicio.classList.add('mostrar');
+            
+            // Ocultar el mensaje después de 2 segundos
+            setTimeout(() => {
+                mensajeReinicio.classList.remove('mostrar');
+            }, 2000);
+        }
+
+        inicializarJuego();
+
+        // Ocultar pantalla de carga cuando la página cargue completamente
+        window.addEventListener('load', () => {
+            const pantallaCarga = document.getElementById('pantalla-carga');
+            pantallaCarga.style.display = 'none';
+        });
+    </script>
+</body>
+</html>
