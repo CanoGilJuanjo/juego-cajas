@@ -161,12 +161,58 @@
     <script>
         let ganador = null;
         let juegoTerminado = false;
+        let palabraBuena = null;
+        let palabraMala = null;
 
-        let mensajeDerrota = '<span class="mensaje derrota">✗ Derrota</span>';
-        let mensajeVictoria = `<span class="mensaje victoria">✓ Victoria</span>`;
+        // Arrays de palabras
+        const palabrasCaras = [
+            'iPhone 16 Pro',
+            'Tesla Model S',
+            'Ordenador de 2000€',
+            'Reloj Rolex',
+            'Diamante',
+            'Playstation 5',
+            'Llave de Ferrari',
+            'Bicicleta Eléctrica',
+            'Anillo de Oro',
+            'Samsung de Maria',
+            'Yate',
+            'Escavadora Caterpillar',
+            'Casa Peppa Pig',
+            '2g de Californio-252',
+            'Helicóptero apache de guerra',
+        ];
+
+        const palabrasBaratas = [
+            'Calcetines',
+            'Papel Higiénico',
+            'Lápiz',
+            'Dildo de 2 velocidades',
+            'Servilleta',
+            'Chicle',
+            'Secador de pelo',
+            'Condon usado',
+            'Manzana podrida',
+            'Calcetin sucio',
+            'Bragas',
+            'Calzoncillo sucio',
+            'Tiza en bolsa',
+            'Folio Din A4',
+            'Escupitajo',
+            'Caca de perro',
+            'Pelo de gato',
+            ''
+        ];
+
+        function obtenerPalabraAleatoria(array) {
+            return array[Math.floor(Math.random() * array.length)];
+        }
+
         function inicializarJuego() {
             ganador = Math.random() > 0.5 ? 1 : 2;
             juegoTerminado = false;
+            palabraBuena = obtenerPalabraAleatoria(palabrasCaras);
+            palabraMala = obtenerPalabraAleatoria(palabrasBaratas);
         }
 
         function seleccionarCaja(numeroCaja) {
@@ -187,8 +233,8 @@
                 }else{
                     caja1.classList.add('seleccionado');
                     caja2.classList.add('oscuro');
-                    caja1.innerHTML =  numeroCaja === ganador ? '<span class="mensaje victoria">✓ Victoria</span>' : '<span class="mensaje derrota">✗ Derrota</span>';
-                    caja2.innerHTML = numeroCaja === ganador ? '<span class="mensaje derrota">✗ Derrota</span>' : '<span class="mensaje victoria">✓ Victoria</span>';
+                    caja1.innerHTML = numeroCaja === ganador ? `<span class="mensaje victoria">${palabraBuena}</span>` : `<span class="mensaje derrota">${palabraMala}</span>`;
+                    caja2.innerHTML = numeroCaja === ganador ? `<span class="mensaje derrota">${palabraMala}</span>` : `<span class="mensaje victoria">${palabraBuena}</span>`;
                 }
             }else {
                 if(caja2.classList.contains('seleccionado') || caja1.classList.contains('seleccionado')){ 
@@ -201,8 +247,8 @@
                 }else{
                     caja2.classList.add('seleccionado');
                     caja1.classList.add('oscuro');
-                    caja2.innerHTML = numeroCaja === ganador ? '<span class="mensaje victoria">✓ Victoria</span>' : '<span class="mensaje derrota">✗ Derrota</span>';
-                    caja1.innerHTML = numeroCaja === ganador ? '<span class="mensaje derrota">✗ Derrota</span>' : '<span class="mensaje victoria">✓ Victoria</span>';
+                    caja2.innerHTML = numeroCaja === ganador ? `<span class="mensaje victoria">${palabraBuena}</span>` : `<span class="mensaje derrota">${palabraMala}</span>`;
+                    caja1.innerHTML = numeroCaja === ganador ? `<span class="mensaje derrota">${palabraMala}</span>` : `<span class="mensaje victoria">${palabraBuena}</span>`;
                 }
             }
         }
